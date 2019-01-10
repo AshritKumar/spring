@@ -41,9 +41,19 @@
 	   System.out.println(userDetails.getPassword());
 	   System.out.println(userDetails.getUsername());
 	   System.out.println(userDetails.isEnabled());
-	%> --%>
+	%> --%> <br>
+	
+	<!-- Hide content based on roles -->
+	<security:authorize access="hasRole('ADMIN')">
 	<a href="adminAction">Admin Links (Only for Admins)</a> <br>
-	<a href="empAction">Employee Links (Only for employees)</a> <br>
-	<a href="managerAction">Manager Links (For employee and managers)</a> <br>
+	</security:authorize>
+	
+	<security:authorize access="hasRole('MANAGER')">
+	<a href="managerAction">Employee Links (Only for employees)</a> <br>managerAction
+	</security:authorize>
+	
+	<security:authorize access="hasAnyRole('EMPLOYEE', 'MANAGER')">
+	<a href="empAction">Employee Links (For employee and managers)</a> <br>
+	</security:authorize>
 </body>
 </html>

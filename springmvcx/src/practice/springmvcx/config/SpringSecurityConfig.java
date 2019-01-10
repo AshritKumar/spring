@@ -1,5 +1,8 @@
 package practice.springmvcx.config;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +15,10 @@ import org.springframework.security.core.userdetails.User.UserBuilder;
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
+	
+	// get the Data Source
+	@Autowired
+	DataSource dataSource;
 	
 	
 	// provide custom login form
@@ -36,13 +43,23 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 			
 	}
 
+	/*
+	 * @Override protected void configure(AuthenticationManagerBuilder auth) throws
+	 * Exception { UserBuilder userBuilder = User.withDefaultPasswordEncoder();
+	 * auth.inMemoryAuthentication()
+	 * .withUser(userBuilder.username("ASH").password("ash").roles("ADMIN"))
+	 * .withUser(userBuilder.username("SAM").password("sam").roles("EMPLOYEE"))
+	 * .withUser(userBuilder.username("KAM").password("kam").roles("EMPLOYEE",
+	 * "MANAGER"));
+	 * 
+	 * }
+	 */
+	// make use of JDBC authentication
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		UserBuilder userBuilder = User.withDefaultPasswordEncoder();
-		auth.inMemoryAuthentication()
-				.withUser(userBuilder.username("ASH").password("ash").roles("ADMIN"))
-				.withUser(userBuilder.username("SAM").password("sam").roles("EMPLOYEE"))
-				.withUser(userBuilder.username("KAM").password("kam").roles("EMPLOYEE","MANAGER"));
+		// spring will take care of getting users & roles from tables (since we used default table structure)
+		auth.jdbcAuthentication().dataSource(dataSource);
 		
 	}
 	 
